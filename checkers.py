@@ -1,16 +1,16 @@
 
 #dict of starting board, with number and wether or not there is a piece
-board = {57:' ',58:'o',59:' ',60:'o',61:' ',62:'o',63:' ',64:'o',
-         49:'o',50:' ',51:'o',52:' ',53:'o',54:' ',55:'o',56:' ',
-         41:' ',42:'o',43:' ',44:'o',45:' ',46:'o',47:' ',48:'o',
-         33:' ',34:' ',35:' ',36:' ',37:' ',38:' ',39:' ',40:' ',
-         25:' ',26:' ',27:' ',28:' ',29:' ',30:' ',31:' ',32:' ',
-         17:'x',18:' ',19:'x',20:' ',21:'x',22:' ',23:'x',24:' ',
-         9:' ',10:'x',11:' ',12:'x',13:' ',14:'x',15:' ',16:'x',
-         1:'x',2:' ',3:'x',4:' ',5:'x',6:' ',7:'x',8:' '}
+board = {57:' ',58:'o',59:' ',60:' ',61:' ',62:'o',63:' ',64:'o',
+         49:'o',50:'x',51:'o',52:' ',53:'o',54:' ',55:'o',56:' ',
+         41:' ',42:' ',43:' ',44:' ',45:' ',46:'X',47:' ',48:'o',
+         33:' ',34:' ',35:'o',36:' ',37:'o',38:' ',39:'o',40:' ',
+         25:' ',26:' ',27:' ',28:'o',29:' ',30:'X',31:' ',32:' ',
+         17:' ',18:' ',19:' ',20:' ',21:' ',22:' ',23:' ',24:' ',
+         9:' ',10:'o',11:' ',12:'x',13:' ',14:'o',15:' ',16:'x',
+         1:'X',2:' ',3:'x',4:' ',5:' ',6:' ',7:'X',8:' '}
 
 convert ={'a1':57,'a2':58,'a3':59,'a4':60,'a5':61,'a6':62,'a7':63,'a8':64,
-          'b1':49,'b2':50,'b3':51,'b4':52,'b5':53,'b6':54,'b7':55,'b8':58,
+          'b1':49,'b2':50,'b3':51,'b4':52,'b5':53,'b6':54,'b7':55,'b8':56,
           'c1':41,'c2':42,'c3':43,'c4':44,'c5':45,'c6':46,'c7':47,'c8':48,
           'd1':33,'d2':34,'d3':35,'d4':36,'d5':37,'d6':38,'d7':39,'d8':40,
           'e1':25,'e2':26,'e3':27,'e4':28,'e5':29,'e6':30,'e7':31,'e8':32,
@@ -45,8 +45,10 @@ show()
 
 
 def p1turn():
-    global end
+    
     input = raw_input("Enter Move: ")
+    global end
+    global start
     start,end = input.split()
     start = convert[start]
     end = convert[end]
@@ -55,37 +57,135 @@ def p1turn():
     
     if board[start] == "x" and board[end] == " ":
         if end - start == 7 or end - start == 9:
-          board[start] = " "
-          board[end] = "x"
-          show()
+          moveup()
+ 
           
         elif end-start==18 and board[start+9] == "o":
-          board[start] = " "
-          board[end] = "x"
-          board[start+9]=" "
-          show()
-          p1jumpagain()
+          takeright(start,end)
+          
           
         elif end-start==14 and board[start+7] == "o":
-          board[start] = " "
-          board[end] = "x"
-          board[start+7]=" "
-          show()
-          p1jumpagain()
+          takeleft(start,end)
+
+        
         else:
           print "invalid"
+    elif board[start]=="X" and board[end]==" ":
+        if end-start== -7 or end-start == -9:
+            movedown()
+        elif end - start == 7 or end - start == 9:
+            moveup()
+        elif end-start==18 and board[start+9] == "o":
+          takeright(start,end)
+        elif end-start==14 and board[start+7] == "o":
+          takeleft(start,end)
+        elif end-start==-18 and board[start-9]=="o":
+          takeleftdown(start,end)
+    
     else:
         print "invalid move"
+        
+#maybe if it so same methods work for o's    
+def moveup():
+    if board[start] == "x":
+      board[start] = " "
+      board[end] = "x"
+      if end >= 57 and end <=64:
+        board[end] = "X"
+      show()
+    elif board[start] =="X":
+      board[start] = " "
+      board[end] = "X"
+      show()
+        
+def movedown():
+    board[start]=" "
+    board[end]="X"
+    show()
+
+def takeright(start,end):
+    s1=start
+    e1=end
+    if board[s1]=="x":
+      board[start] = " "
+      board[end] = "x"
+      board[start+9]=" "
+      show()
+    elif board[s1]=="X":
+      board[start] = " "
+      board[end] = "X"
+      board[start+9]=" "
+      show() 
+    if (e1+18 <= 64):
+      if board[e1+9] == "o" and board[e1+18]==" ":
+        s1=e1
+        e1=e1+18
+        takeright(s1,e1)
+      elif board[e1+7] == "o" and board[e1+14]==" ":
+        s1=e1
+        e1=e1+14
+        takeleft(s1,e1)
+      elif board[e1]=="X" and board[e1-7] == "o" and board[e1-14]==" ":
+        s1=e1
+        e1=e1-14
+        takerightdown(s1,e1)
+      elif board[e1]=="X" and board[e1-9] == "o" and board[e1-18]==" ":
+        s1=e1
+        e1=e1-18
+        takeleftdown(s1,e1)
+
+
+def takeleft(start,end):
+    s1=start
+    e1=end
+    if board[s1]=="x":
+      board[s1] = " "
+      board[e1] = "x"
+      board[s1+7]=" "
+      show()
+    if board[s1]=="X":
+      board[s1] = " "
+      board[e1] = "X"
+      board[s1+7]=" "
+      show()
+    if (e1+18 <= 64):
+      if board[e1+9] == "o" and board[e1+18]==" ":
+        s1=e1
+        e1=e1+18
+        takeright(s1,e1)
+      elif board[e1+7] == "o" and board[e1+14]==" ":
+        s1=e1
+        e1=e1+14
+        takeleft(s1,e1)
+      elif board[e1]=="X" and board[e1-7] == "o" and board[e1-14]==" ":
+        s1=e1
+        e1=e1-14
+        takerightdown(s1,e1)
+      elif board[e1]=="X" and board[e1-9] == "o" and board[e1-18]==" ":
+        s1=e1
+        e1=e1-18
+        takeleftdown(s1,e1)
+      
+
+
+def takeleftdown(start,end):
+    s1 = start
+    e1 = end
+    board[s1]=" "
+    board[e1]="X"
+    board[s1-9]=" "
+    show()
+
+def takerightdown(start,end):
+    s1=start
+    e1=end
+    board[s1]=" "
+    board[e1]="X"
+    board[s1-7]=" "
+    show()
+    
     
 
-def p1jumpagain():
-    if board[end+7]=="o" and board[end+14]==" ":
-      board[end]=" "
-      board[end+7]=" "
-      board[end+14]="x"
-      show()
-      #end = end+14
-      #p1jumpagain()
-
-
-p1turn()
+while True:
+  p1turn()
+  
