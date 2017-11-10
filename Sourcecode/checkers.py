@@ -91,64 +91,75 @@ def checkwin():
         else:
             print"Invalid input"
 
+def undo():
+    test = bstack.pop()
+    test = bstack.pop()
+    test = bstack.pop()
+    print test
+    p1turn()
 
+global bstack
+bstack = []
 
 def p1turn():
     global end
     global start
     input = raw_input("P1 Enter Move: ")
-
-    start,end = input.split()
-    start = convert[start]
-    end = convert[end]
-
-    global ledge
-    ledge=[1,9,17,25,33,41,49,57]
-    global redge
-    redge =[8,16,24,32,40,48,56,64]
-    global iledge
-    iledge = [2,10,18,26,34,42,50,58]
-    global iredge
-    iredge = [7,15,23,31,39,47,55,63]
-
-    if (start in ledge or start in redge) and (end in ledge or end in redge):
-        print "Invalid move"
-        p1turn()
-    elif (start in iledge or start in redge) and (end in redge or end in iledge):
-        print "1nvalid move"
-        p1turn()
-    elif (start in iredge or start in ledge) and (end in ledge or end in iredge):
-        print"Invalid move"
-        p1turn()
+    if input == "undo":
+        undo()
     else:
-        
-        if board[start] == "x" and board[end] == " ":
-            if end - start == 7 or end - start == 9:
-              moveup()
-            elif end-start==18 and (board[start+9] == "o" or board[start+9] == "O"):
-              takeright(start,end)
-            elif end-start==14 and (board[start+7] == "o" or board[start+7] == "O"):
-              takeleft(start,end)
+        bstack.append(board)
+        start,end = input.split()
+        start = convert[start]
+        end = convert[end]
+
+        global ledge
+        ledge=[1,9,17,25,33,41,49,57]
+        global redge
+        redge =[8,16,24,32,40,48,56,64]
+        global iledge
+        iledge = [2,10,18,26,34,42,50,58]
+        global iredge
+        iredge = [7,15,23,31,39,47,55,63]
+
+        if (start in ledge or start in redge) and (end in ledge or end in redge):
+            print "Invalid move"
+            p1turn()
+        elif (start in iledge or start in redge) and (end in redge or end in iledge):
+            print "1nvalid move"
+            p1turn()
+        elif (start in iredge or start in ledge) and (end in ledge or end in iredge):
+            print"Invalid move"
+            p1turn()
+        else:
+            
+            if board[start] == "x" and board[end] == " ":
+                if end - start == 7 or end - start == 9:
+                  moveup()
+                elif end-start==18 and (board[start+9] == "o" or board[start+9] == "O"):
+                  takeright(start,end)
+                elif end-start==14 and (board[start+7] == "o" or board[start+7] == "O"):
+                  takeleft(start,end)
+                else:
+                  print "invalid move"
+                  p1turn()
+            elif board[start]=="X" and board[end]==" ":
+                if end-start== -7 or end-start == -9:
+                    movedown()
+                elif end - start == 7 or end - start == 9:
+                    moveup()
+                elif end-start==18 and (board[start+9] == "o" or board[start+9] == "O"):
+                  takeright(start,end)
+                elif end-start==14 and (board[start+7] == "o" or board[start+7] == "O"):
+                  takeleft(start,end)
+                elif end-start==-18 and (board[start-9]=="o" or board[start-9]=="O"):
+                  takeleftdown(start,end)
+                elif end-start==-14 and (board[start-7]=="o" or board[start-7]=="O"):
+                  takerightdown(start,end)
             else:
               print "invalid move"
               p1turn()
-        elif board[start]=="X" and board[end]==" ":
-            if end-start== -7 or end-start == -9:
-                movedown()
-            elif end - start == 7 or end - start == 9:
-                moveup()
-            elif end-start==18 and (board[start+9] == "o" or board[start+9] == "O"):
-              takeright(start,end)
-            elif end-start==14 and (board[start+7] == "o" or board[start+7] == "O"):
-              takeleft(start,end)
-            elif end-start==-18 and (board[start-9]=="o" or board[start-9]=="O"):
-              takeleftdown(start,end)
-            elif end-start==-14 and (board[start-7]=="o" or board[start-7]=="O"):
-              takerightdown(start,end)
-        else:
-          print "invalid move"
-          p1turn()
-    checkwin()
+        checkwin()
 #maybe if it so same methods work for o's    
 def moveup():
     if board[start] == "x":
@@ -336,7 +347,8 @@ def p2turn():
         start,end = input.split()
         start = convert[start]
         end = convert[end]
-
+    
+    bstack.append(board)
     if (start in ledge or start in redge) and (end in ledge or end in redge):
         p2turn()
     elif (start in iledge or start in redge) and (end in redge or end in iledge):
