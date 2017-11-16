@@ -4,14 +4,14 @@ import copy
 
 def makeboard():
     global board
-    board = {57:' ',58:' ',59:' ',60:' ',61:' ',62:' ',63:' ',64:' ',
-             49:' ',50:'x',51:' ',52:' ',53:' ',54:' ',55:'o',56:' ',
-             41:' ',42:' ',43:' ',44:' ',45:' ',46:'x',47:' ',48:' ',
+    board = {57:' ',58:'o',59:' ',60:'o',61:' ',62:'o',63:' ',64:'o',
+             49:'o',50:' ',51:'o',52:' ',53:'o',54:' ',55:'o',56:' ',
+             41:' ',42:'o',43:' ',44:'o',45:' ',46:'o',47:' ',48:'o',
              33:' ',34:' ',35:' ',36:' ',37:' ',38:' ',39:' ',40:' ',
              25:' ',26:' ',27:' ',28:' ',29:' ',30:' ',31:' ',32:' ',
-             17:' ',18:' ',19:'O',20:' ',21:' ',22:' ',23:' ',24:' ',
-             9:' ',10:'x',11:' ',12:'x',13:' ',14:' ',15:' ',16:'X',
-             1:' ',2:' ',3:'x',4:' ',5:' ',6:' ',7:'X',8:' '}
+             17:'x',18:' ',19:'x',20:' ',21:'x',22:' ',23:'x',24:' ',
+             9:' ',10:'x',11:' ',12:'x',13:' ',14:'x',15:' ',16:'x',
+             1:'x',2:' ',3:'x',4:' ',5:'x',6:' ',7:'x',8:' '}
 
 convert ={'a1':57,'a2':58,'a3':59,'a4':60,'a5':61,'a6':62,'a7':63,'a8':64,
           'b1':49,'b2':50,'b3':51,'b4':52,'b5':53,'b6':54,'b7':55,'b8':56,
@@ -92,19 +92,43 @@ def checkwin():
             print"Invalid input"
 
 def undo():
+    print'undo'
+    print pturn
+    test=bstack.pop()
+    test=bstack.pop()
+    test=bstack.pop()
     
+    for k,v in test.iteritems():
+        for k2,v2 in board.iteritems():
+            if k2 == k:
+                board[k2]=test[k]
+    show()
+    if pturn == 1:
+      p1turn()
+    else:
+      p2turn()
 
 global bstack
 bstack = []
 
+
+
+
 def p1turn():
     global end
     global start
+    global pturn
+    pturn = 0
+    
+    
+    print 'player 1'
+    print pturn
     input = raw_input("P1 Enter Move: ")
     if input == "undo":
+        pturn = 1
         undo()
     else:
-        bstack.append(board)
+        
         start,end = input.split()
         start = convert[start]
         end = convert[end]
@@ -283,7 +307,7 @@ def takerightdown(start,end):
         board[e1]="O"
         board[s1-7]=" "
         show()
-        checkboard()
+        checkjump()
    
     
 def checkjump(e1):
@@ -340,48 +364,54 @@ def p2turn():
 
     elif nop == 2:
         input = raw_input("P2 Enter Move: ")
-        start,end = input.split()
-        start = convert[start]
-        end = convert[end]
-    
-    bstack.append(board)
-    if (start in ledge or start in redge) and (end in ledge or end in redge):
-        p2turn()
-    elif (start in iledge or start in redge) and (end in redge or end in iledge):
-        print "1nvalid move"
-        p2turn()
-    elif (start in iredge or start in ledge) and (end in ledge or end in iredge):
-        print"Invalid move"
-        p2turn()
-    else:
-        if end >=1 and end<=64:
-            if board[start] == "o" and board[end] == " ":
-                if end - start == -7 or end - start == -9:
-                  movedown()
-                elif end-start==-18 and (board[start-9] == "x" or board[start-9] == "X"):
-                  takeleftdown(start,end)
-                elif end-start==14 and (board[start+7] == "x" or board[start+7] == "X"):
-                  takeleft(start,end)
-                else:
-                  p2turn()
-            elif board[start]=="O" and board[end]==" ":
-                if end-start== -7 or end-start == -9:
-                    movedown()
-                elif end - start == 7 or end - start == 9:
-                    moveup()
-                elif end-start==18 and (board[start+9] == "x" or board[start+9] == "X"):
-                  takeright(start,end)
-                elif end-start==14 and (board[start+7] == "x" or board[start+7] == "X"):
-                  takeleft(start,end)
-                elif end-start==-18 and (board[start-9]=="x"or board[start-9]=="X"):
-                  takeleftdown(start,end)
-                elif end-start==-14 and (board[start-7]=="x" or board[start-7]=="X"):
-                  takerightdown(start,end)
-            else:
-                p2turn()
+        if input == "undo":
+            pturn = 2
+            print pturn
+            undo()
         else:
-            
-            p2turn()
+            start,end = input.split()
+            start = convert[start]
+            end = convert[end]
+        
+        
+            if (start in ledge or start in redge) and (end in ledge or end in redge):
+                p2turn()
+            elif (start in iledge or start in redge) and (end in redge or end in iledge):
+                print "1nvalid move"
+                p2turn()
+            elif (start in iredge or start in ledge) and (end in ledge or end in iredge):
+                print"Invalid move"
+                p2turn()
+            else:
+                if end >=1 and end<=64:
+                    if board[start] == "o" and board[end] == " ":
+                        if end - start == -7 or end - start == -9:
+                          movedown()
+                        elif end-start==-18 and (board[start-9] == "x" or board[start-9] == "X"):
+                          takeleftdown(start,end)
+                        elif end-start==14 and (board[start+7] == "x" or board[start+7] == "X"):
+                          takeleft(start,end)
+                        else:
+                          p2turn()
+                    elif board[start]=="O" and board[end]==" ":
+                        if end-start== -7 or end-start == -9:
+                            movedown()
+                        elif end - start == 7 or end - start == 9:
+                            moveup()
+                        elif end-start==18 and (board[start+9] == "x" or board[start+9] == "X"):
+                          takeright(start,end)
+                        elif end-start==14 and (board[start+7] == "x" or board[start+7] == "X"):
+                          takeleft(start,end)
+                        elif end-start==-18 and (board[start-9]=="x"or board[start-9]=="X"):
+                          takeleftdown(start,end)
+                        elif end-start==-14 and (board[start-7]=="x" or board[start-7]=="X"):
+                          takerightdown(start,end)
+                    else:
+                        p2turn()
+                else:
+                    
+                    p2turn()
+        checkwin()
 
 def printai():
   pstrt = next(key for key, value in convert.items() if value == start)
@@ -393,7 +423,9 @@ def play():
   numofplayers()
   show()
   while True:
+    bstack.append(board.copy())
     p1turn()
+    bstack.append(board.copy())
     p2turn()
     if nop ==1:
       printai()
